@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Voice & Text Chat</title>
+        <link rel="stylesheet" href="/static/client.css" />
+    </head>
+    <body>
+        <!-- Join Screen -->
+        <div id="join-screen" class="screen">
+            <div class="join-container">
+                <h1>🎤 Voice Chat</h1>
+                <p class="subtitle">Low-bandwidth voice & text chat</p>
+
+                <div class="join-form">
+                    <input
+                        type="text"
+                        id="username-input"
+                        placeholder="Your name"
+                        maxlength="20"
+                        autocomplete="off"
+                    />
+                    <input
+                        type="text"
+                        id="room-input"
+                        placeholder="Room name"
+                        maxlength="30"
+                        autocomplete="off"
+                    />
+
+                    <div class="quality-selector">
+                        <label>Audio Quality:</label>
+                        <div class="quality-options">
+                            <button class="quality-btn" data-quality="low">
+                                <span class="quality-icon">📶</span>
+                                <span class="quality-name">Low</span>
+                                <span class="quality-desc">~6 kbps</span>
+                            </button>
+                            <button
+                                class="quality-btn active"
+                                data-quality="medium"
+                            >
+                                <span class="quality-icon">📶</span>
+                                <span class="quality-name">Medium</span>
+                                <span class="quality-desc">~16 kbps</span>
+                            </button>
+                            <button class="quality-btn" data-quality="high">
+                                <span class="quality-icon">📶</span>
+                                <span class="quality-name">High</span>
+                                <span class="quality-desc">~32 kbps</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button id="join-btn" class="primary-btn">Join Room</button>
+                </div>
+
+                <p class="info-text">
+                    Works best with headphones to prevent echo
+                </p>
+            </div>
+        </div>
+
+        <!-- Chat Screen -->
+        <div id="chat-screen" class="screen hidden">
+            <div class="app-container">
+                <!-- Sidebar - Text Chat -->
+                <aside class="sidebar">
+                    <div class="sidebar-header">
+                        <h2>💬 Chat</h2>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <p class="chat-placeholder">No messages yet...</p>
+                    </div>
+                    <div class="chat-input-container">
+                        <textarea
+                            id="chat-input"
+                            placeholder="Type a message..."
+                            rows="1"
+                        ></textarea>
+                        <button
+                            id="send-btn"
+                            class="icon-btn"
+                            title="Send message"
+                        >
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                            >
+                                <path
+                                    d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Main Content - Voice -->
+                <main class="main-content">
+                    <div class="room-header">
+                        <div class="room-info">
+                            <h1 id="room-name">Room</h1>
+                            <span
+                                id="connection-status"
+                                class="status connecting"
+                                >Connecting...</span
+                            >
+                        </div>
+                        <button id="leave-btn" class="danger-btn">Leave</button>
+                    </div>
+
+                    <!-- Local User Controls -->
+                    <div class="local-controls">
+                        <div class="local-user-info">
+                            <span id="local-username">You</span>
+                            <span
+                                id="local-speaking"
+                                class="speaking-indicator hidden"
+                                >Speaking</span
+                            >
+                        </div>
+                        <div class="control-buttons">
+                            <button
+                                id="mute-btn"
+                                class="control-btn"
+                                title="Toggle microphone"
+                            >
+                                <svg
+                                    id="mic-on-icon"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"
+                                    />
+                                </svg>
+                                <svg
+                                    id="mic-off-icon"
+                                    class="hidden"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        d="M19 11c0 1.19-.34 2.3-.9 3.28l-1.23-1.23c.27-.62.43-1.31.43-2.05H19zm-4 .16L9 5.18V5c0-1.66 1.34-3 3-3s3 1.34 3 3v6.16zM4.27 3L3 4.27l6.01 6.01V11c0 1.66-1.33 3-2.99 3-1.66 0-3.01-1.34-3.01-3H1c0 2.76 2.24 5 5.01 5 2.29 0 4.22-1.54 4.79-3.64L14.87 16.37c-.99.59-2.13.93-3.37.93-3.59 0-6.5-2.91-6.5-6.5H3c0 4.28 3.22 7.81 7.5 8.36V21h3v-2.14c1.57-.24 3.01-.85 4.22-1.74l2.01 2.01L21 17.73 4.27 3z"
+                                    />
+                                </svg>
+                            </button>
+                            <div class="volume-control">
+                                <label for="input-volume">Mic:</label>
+                                <input
+                                    type="range"
+                                    id="input-volume"
+                                    min="0"
+                                    max="100"
+                                    value="100"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Peers List -->
+                    <div class="peers-container">
+                        <h3>👥 Participants</h3>
+                        <div id="peers-list" class="peers-list">
+                            <p class="peers-placeholder">
+                                Waiting for others to join...
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Stats (optional, for debugging) -->
+                    <div id="stats-panel" class="stats-panel hidden">
+                        <h4>Connection Stats</h4>
+                        <div id="stats-content"></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- Audio elements container (hidden) -->
+        <div id="audio-container" style="display: none"></div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/static/client.js"></script>
+    </body>
+</html>
