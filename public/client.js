@@ -273,6 +273,17 @@ function leaveRoom() {
  * Set up local audio media with optimized constraints
  */
 async function setupLocalMedia() {
+  console.log("Requesting microphone access...");
+
+  // Check if getUserMedia is available
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    const errorMsg =
+      "getUserMedia is not supported. Make sure you're using HTTPS or localhost.";
+    console.error(errorMsg);
+    alert(errorMsg);
+    throw new Error(errorMsg);
+  }
+
   const qualitySettings = CONFIG.quality[selectedQuality];
 
   const constraints = {
@@ -286,7 +297,37 @@ async function setupLocalMedia() {
     video: false,
   };
 
-  localStream = await navigator.mediaDevices.getUserMedia(constraints);
+  console.log("Audio constraints:", constraints);
+
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia(constraints);
+    console.log("Microphone access granted!");
+  } catch (error) {
+    console.error("getUserMedia error:", error.name, error.message);
+
+    if (error.name === "NotAllowedError") {
+      alert(
+        "Microphone access was denied. Please allow microphone access and try again.",
+      );
+    } else if (error.name === "NotFoundError") {
+      alert("No microphone found. Please connect a microphone and try again.");
+    } else if (error.name === "NotReadableError") {
+      alert("Microphone is already in use by another application.");
+    } else if (error.name === "OverconstrainedError") {
+      // Try again with simpler constraints
+      console.log("Retrying with simpler audio constraints...");
+      localStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false,
+      });
+    } else {
+      alert(`Microphone error: ${error.message}`);
+    }
+
+    if (!localStream) {
+      throw error;
+    }
+  }
 
   // Set up Voice Activity Detection
   setupVAD();
